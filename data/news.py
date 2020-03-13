@@ -5,21 +5,24 @@ from sqlalchemy import orm
 from .db_session import SqlAlchemyBase
 
 
-class News(SqlAlchemyBase):
-    __tablename__ = 'news'
+class Jobs(SqlAlchemyBase):
+    __tablename__ = 'jobs'
 
-    id = sqlalchemy.Column(sqlalchemy.Integer, 
+    id = sqlalchemy.Column(sqlalchemy.Integer,
                            primary_key=True, autoincrement=True)
-    title = sqlalchemy.Column(sqlalchemy.String, nullable=True)
-    content = sqlalchemy.Column(sqlalchemy.String, nullable=True)
-    created_date = sqlalchemy.Column(sqlalchemy.DateTime, 
-                                     default=datetime.datetime.now)
-    is_private = sqlalchemy.Column(sqlalchemy.Boolean, default=True)
+    team_leader = sqlalchemy.Column(sqlalchemy.Integer, nullable=True)
+    job = sqlalchemy.Column(sqlalchemy.String, nullable=True)
+    work_size = sqlalchemy.Column(sqlalchemy.Integer, nullable=True)
+    collaborators = sqlalchemy.Column(sqlalchemy.String, nullable=True)
+    start_date = sqlalchemy.Column(sqlalchemy.DateTime,
+                                   default=datetime.datetime.now)
+    end_date = sqlalchemy.Column(sqlalchemy.DateTime,
+                                 default=datetime.datetime.now)
+    is_finished = sqlalchemy.Column(sqlalchemy.Boolean)
 
-    user_id = sqlalchemy.Column(sqlalchemy.Integer, 
-                                sqlalchemy.ForeignKey("users.id"))
+    team_leader = sqlalchemy.Column(sqlalchemy.Integer,
+                                    sqlalchemy.ForeignKey("users.id"))
     user = orm.relation('User')
-    news = orm.relation("News", back_populates='user')
 
 
 
