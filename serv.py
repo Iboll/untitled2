@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, make_response
-from flask_login import LoginManager, login_user, login_required, logout_user
+from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from flask_wtf import FlaskForm
 from werkzeug.utils import redirect
 from wtforms import PasswordField, BooleanField, SubmitField, StringField, TextAreaField
@@ -7,7 +7,7 @@ from wtforms.fields.html5 import EmailField
 from wtforms.validators import DataRequired
 
 from data import db_session
-from data.news import Jobs
+from data.jobs import Jobs
 from data.users import User
 
 app = Flask(__name__)
@@ -60,8 +60,12 @@ def reqister():
                                    form=form,
                                    message="Такой пользователь уже есть")
         user = User(
-            name=form.name.data,
             email=form.email.data,
+            name=form.name.data,
+            surname=form.surname.data,
+            age=form.age.data,
+            position=form.position.data,
+            speciality=form.speciality.data,
             about=form.about.data
         )
         user.set_password(form.password.data)
@@ -78,11 +82,41 @@ def logout():
     return redirect("/")
 
 
+@app.route('/add_job',  methods=['GET', 'POST'])
+@login_required
+def add_jobs():
+    form = JobsForm()
+    if form.validate_on_submit():
+        session = db_session.create_session()
+        news = JobsForm()
+        news.job = form.job.data
+        news.work_size = form.work_size.data
+        news.collaborators = form.collaborators.data
+        news.team_leader = form.team_leader.data
+        news.is_finished = form.is_finished.data
+        current_job = Jobs(
+            job=form.job.data,
+            work_size=form.work_size.data,
+            collaborators=form.collaborators.data,
+            team_leader=form.team_leader.data,
+            is_finished=form.is_finished.data
+        )
+        session.merge(current_job)
+        session.commit()
+        return redirect('/')
+    return render_template('jobs.html', title='Добавление работы',
+                           form=form)
+
+
 class RegisterForm(FlaskForm):
     email = EmailField('Почта', validators=[DataRequired()])
     password = PasswordField('Пароль', validators=[DataRequired()])
     password_again = PasswordField('Повторите пароль', validators=[DataRequired()])
     name = StringField('Имя пользователя', validators=[DataRequired()])
+    surname = StringField('Фамилия пользователя', validators=[DataRequired()])
+    age = StringField('Возраст пользователя', validators=[DataRequired()])
+    position = StringField('Должность пользователя', validators=[DataRequired()])
+    speciality = StringField('Профессия пользователя', validators=[DataRequired()])
     about = TextAreaField("Немного о себе")
     submit = SubmitField('Войти')
 
@@ -92,6 +126,15 @@ class LoginForm(FlaskForm):
     password = PasswordField('Пароль', validators=[DataRequired()])
     remember_me = BooleanField('Запомнить меня')
     submit = SubmitField('Войти')
+
+
+class JobsForm(FlaskForm):
+    job = StringField('Работа', validators=[DataRequired()])
+    work_size = StringField('Время на работу', validators=[DataRequired()])
+    collaborators = StringField('сollaborators', validators=[DataRequired()])
+    team_leader = StringField('team_leader', validators=[DataRequired()])
+    is_finished = BooleanField("Законченость")
+    submit = SubmitField('Применить')
 
 
 def main():

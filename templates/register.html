@@ -42,6 +42,42 @@
         {% endfor %}
     </p>
     <p>
+        {{ form.surname.label }}<br>
+        {{ form.surname(class="form-control") }}<br>
+        {% for error in form.surname.errors %}
+            <p class="alert alert-danger" role="alert">
+                {{ error }}
+            </p>
+        {% endfor %}
+    </p>
+    <p>
+        {{ form.age.label }}<br>
+        {{ form.age(class="form-control") }}<br>
+        {% for error in form.age.errors %}
+            <p class="alert alert-danger" role="alert">
+                {{ error }}
+            </p>
+        {% endfor %}
+    </p>
+    <p>
+        {{ form.position.label }}<br>
+        {{ form.position(class="form-control") }}<br>
+        {% for error in form.position.errors %}
+            <p class="alert alert-danger" role="alert">
+                {{ error }}
+            </p>
+        {% endfor %}
+    </p>
+    <p>
+        {{ form.speciality.label }}<br>
+        {{ form.speciality(class="form-control") }}<br>
+        {% for error in form.speciality.errors %}
+            <p class="alert alert-danger" role="alert">
+                {{ error }}
+            </p>
+        {% endfor %}
+    </p>
+    <p>
         {{ form.about.label }}<br>
         {{ form.about(class="form-control") }}<br>
         {% for error in form.about.errors %}
