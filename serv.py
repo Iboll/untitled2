@@ -21,7 +21,7 @@ login_manager.init_app(app)
 @app.route("/")
 def index():
     session = db_session.create_session()
-    jobs = session.query(Jobs).filter(Jobs.is_finished is False)
+    jobs = session.query(Jobs)
     return render_template("index.html", news=jobs)
 
 
