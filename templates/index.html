@@ -12,6 +12,13 @@
     </div>
     </div>
 {% endif %}
+    {% if current_user.is_authenticated and current_user == item.user or current_user.is_authenticated and current_user.id == 1 %}
+    <div>
+        <a href="/jobs/{{ item.id }}" class="btn btn-warning">Изменить</a>
+        <a href="/jobs_delete/{{ item.id }}" class="btn btn-danger">Удалить</a>
+    </div>
+{% endif %}
+
 </nav>
 {% endfor %}
 {% endblock %}

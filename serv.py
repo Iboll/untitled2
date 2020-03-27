@@ -1,3 +1,5 @@
+from os import abort
+
 from flask import Flask, render_template, request, make_response
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from flask_wtf import FlaskForm
@@ -82,7 +84,7 @@ def logout():
     return redirect("/")
 
 
-@app.route('/add_job',  methods=['GET', 'POST'])
+@app.route('/add_job', methods=['GET', 'POST'])
 @login_required
 def add_jobs():
     form = JobsForm()
@@ -106,6 +108,74 @@ def add_jobs():
         return redirect('/')
     return render_template('jobs.html', title='Добавление работы',
                            form=form)
+
+
+@app.route('/jobs/<int:id>', methods=['GET', 'POST'])
+@login_required
+def edit_jobs(id):
+    form = JobsForm()
+    if request.method == "GET":
+        session = db_session.create_session()
+
+        news = session.query(Jobs).filter(Jobs.id == id,
+                                          Jobs.user == current_user).first()
+        news1 = session.query(Jobs).filter(Jobs.id == id).first()
+        if news:
+            form.job.data = news.job
+            form.work_size.data = news.work_size
+            form.collaborators.data = news.collaborators
+            form.team_leader.data = news.team_leader
+            form.is_finished.data = news.is_finished
+        if news1:
+            form.job.data = news1.job
+            form.work_size.data = news1.work_size
+            form.collaborators.data = news1.collaborators
+            form.team_leader.data = news1.team_leader
+            form.is_finished.data = news1.is_finished
+        else:
+            abort(404)
+    if form.validate_on_submit():
+        session = db_session.create_session()
+        news = session.query(Jobs).filter(Jobs.id == id,
+                                          Jobs.user == current_user).first()
+        news1 = session.query(Jobs).filter(Jobs.id == id).first()
+        if news:
+            news.job = form.job.data
+            news.work_size = form.work_size.data
+            news.collaborators = form.collaborators.data
+            news.team_leader = form.team_leader.data
+            news.is_finished = form.is_finished.data
+            session.commit()
+            return redirect('/')
+        if news1:
+            news1.job = form.job.data
+            news1.work_size = form.work_size.data
+            news1.collaborators = form.collaborators.data
+            news1.team_leader = form.team_leader.data
+            news1.is_finished = form.is_finished.data
+            session.commit()
+            return redirect('/')
+        else:
+            abort(404)
+    return render_template('jobs.html', title='Редактирование новости', form=form)
+
+
+@app.route('/jobs_delete/<int:id>', methods=['GET', 'POST'])
+@login_required
+def news_delete(id):
+    session = db_session.create_session()
+    news = session.query(Jobs).filter(Jobs.id == id,
+                                      Jobs.user == current_user).first()
+    news1 = session.query(Jobs).filter(Jobs.id == id).first()
+    if news:
+        session.delete(news)
+        session.commit()
+    if news1:
+        session.delete(news1)
+        session.commit()
+    else:
+        abort(404)
+    return redirect('/')
 
 
 class RegisterForm(FlaskForm):
