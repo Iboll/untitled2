@@ -86,16 +86,10 @@ def logout():
 
 @app.route('/add_job', methods=['GET', 'POST'])
 @login_required
-def add_jobs():
+def add_jobs(сurrent_user=current_user):
     form = JobsForm()
     if form.validate_on_submit():
         session = db_session.create_session()
-        news = JobsForm()
-        news.job = form.job.data
-        news.work_size = form.work_size.data
-        news.collaborators = form.collaborators.data
-        news.team_leader = form.team_leader.data
-        news.is_finished = form.is_finished.data
         current_job = Jobs(
             job=form.job.data,
             work_size=form.work_size.data,
@@ -103,7 +97,8 @@ def add_jobs():
             team_leader=form.team_leader.data,
             is_finished=form.is_finished.data
         )
-        session.merge(current_job)
+        current_user.job.append(current_job)
+        session.merge(сurrent_user)
         session.commit()
         return redirect('/')
     return render_template('jobs.html', title='Добавление работы',
