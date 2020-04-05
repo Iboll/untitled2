@@ -1,15 +1,17 @@
 from os import abort
 
-from flask import Flask, render_template, request, make_response
+from flask import Flask, render_template, request, make_response, jsonify
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from flask_wtf import FlaskForm
 from werkzeug.utils import redirect
 from wtforms import PasswordField, BooleanField, SubmitField, StringField, TextAreaField
 from wtforms.fields.html5 import EmailField
 from wtforms.validators import DataRequired
+from flask import Flask
 
-from data import db_session
+from data import db_session, jobs_api
 from data.jobs import Jobs
+from data.jobs_api import blueprint
 from data.users import User
 
 app = Flask(__name__)
@@ -157,7 +159,7 @@ def edit_jobs(id):
 
 @app.route('/jobs_delete/<int:id>', methods=['GET', 'POST'])
 @login_required
-def news_delete(id):
+def jobs_delete(id):
     session = db_session.create_session()
     news = session.query(Jobs).filter(Jobs.id == id,
                                       Jobs.user == current_user).first()
@@ -171,6 +173,11 @@ def news_delete(id):
     else:
         abort(404)
     return redirect('/')
+
+
+@app.errorhandler(404)
+def not_found(error):
+    return make_response(jsonify({'error': 'Not found'}), 404)
 
 
 class RegisterForm(FlaskForm):
@@ -203,6 +210,8 @@ class JobsForm(FlaskForm):
 
 
 def main():
+    db_session.global_init("db/mars_explorer.sqlite")
+    app.register_blueprint(jobs_api.blueprint)
     app.run()
 
 
