@@ -8,15 +8,25 @@ from wtforms import PasswordField, BooleanField, SubmitField, StringField, TextA
 from wtforms.fields.html5 import EmailField
 from wtforms.validators import DataRequired
 from flask import Flask
+from flask_restful import reqparse, abort, Api, Resource
 
+import users_resource
 from data import db_session, jobs_api
 from data.jobs import Jobs
 from data.jobs_api import blueprint
 from data.users import User
 
 app = Flask(__name__)
+api = Api(app)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 db_session.global_init("db/mars_explorer.sqlite")
+
+
+# для списка объектов
+api.add_resource(users_resource.UsersListResource, '/api/v2/users')
+
+# для одного объекта
+api.add_resource(users_resource.UsersResource, '/api/v2/users/<int:user_id>')
 
 login_manager = LoginManager()
 login_manager.init_app(app)
