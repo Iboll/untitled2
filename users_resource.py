@@ -19,7 +19,7 @@ class UsersResource(Resource):
         abort_if_news_not_found(user_id)
         session = db_session.create_session()
         user = session.query(User).get(user_id)
-        return jsonify({'user': user.to_dict(
+        return jsonify({'users': user.to_dict(
             only=('email', 'name', 'surname', 'age', 'position', 'speciality', 'about', 'address'))})
 
     def delete(self, user_id):
@@ -35,7 +35,7 @@ class UsersListResource(Resource):
     def get(self):
         session = db_session.create_session()
         news = session.query(User).all()
-        return jsonify({'news': [item.to_dict(
+        return jsonify({'users': [item.to_dict(
             only=('email', 'name', 'surname', 'age', 'position', 'speciality', 'about', 'address')) for item in news]})
 
     def post(self):

@@ -11,6 +11,7 @@ from flask import Flask
 from flask_restful import reqparse, abort, Api, Resource
 
 import users_resource
+import jobs_resourse
 from data import db_session, jobs_api
 from data.jobs import Jobs
 from data.jobs_api import blueprint
@@ -27,6 +28,10 @@ api.add_resource(users_resource.UsersListResource, '/api/v2/users')
 
 # для одного объекта
 api.add_resource(users_resource.UsersResource, '/api/v2/users/<int:user_id>')
+
+
+api.add_resource(jobs_resourse.JobsListResource, '/api/v2/jobs')
+api.add_resource(jobs_resourse.JobsResource, '/api/v2/jobs/<int:jobs_id>')
 
 login_manager = LoginManager()
 login_manager.init_app(app)

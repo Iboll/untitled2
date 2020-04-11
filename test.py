@@ -1,6 +1,6 @@
 from requests import get, post, delete
 
-# Получение всех работ
+# Получение всех пользователей
 print(get('http://localhost:5000/api/v2/users').json())
 
 # Пустой запрос
@@ -26,7 +26,7 @@ print(post('http://localhost:5000/api/v2/users',
                  'address': None}).json())
 
 # Данные первого пользователя
-print(get('http://localhost:5000/api/v2/users/3').json())
+print(get('http://localhost:5000/api/v2/users/1').json())
 
 # Пользователя с таким id нет
 print(get('http://localhost:5000/api/v2/users/999').json())
@@ -35,7 +35,7 @@ print(get('http://localhost:5000/api/v2/users/999').json())
 print(get('http://localhost:5000/api/v2/users/q').json())
 
 # Удаление пятого пользователя
-print(delete('http://localhost:5000/api/v2/users/3').json())
+print(delete('http://localhost:5000/api/v2/users/5').json())
 
 # Пользователя с таким id нет
 print(delete('http://localhost:5000/api/v2/users/999').json())
