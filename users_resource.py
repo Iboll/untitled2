@@ -20,12 +20,12 @@ class UsersResource(Resource):
         session = db_session.create_session()
         user = session.query(User).get(user_id)
         return jsonify({'user': user.to_dict(
-            only=('email', 'name', 'surname', 'age', 'position', 'speciality', 'about'))})
+            only=('email', 'name', 'surname', 'age', 'position', 'speciality', 'about', 'address'))})
 
-    def delete(self, news_id):
-        abort_if_news_not_found(news_id)
+    def delete(self, user_id):
+        abort_if_news_not_found(user_id)
         session = db_session.create_session()
-        news = session.query(User).get(news_id)
+        news = session.query(User).get(user_id)
         session.delete(news)
         session.commit()
         return jsonify({'success': 'OK'})
@@ -36,19 +36,20 @@ class UsersListResource(Resource):
         session = db_session.create_session()
         news = session.query(User).all()
         return jsonify({'news': [item.to_dict(
-            only=('email', 'name', 'surname', 'age', 'position', 'speciality', 'about')) for item in news]})
+            only=('email', 'name', 'surname', 'age', 'position', 'speciality', 'about', 'address')) for item in news]})
 
     def post(self):
         args = parser.parse_args()
         session = db_session.create_session()
         user = User(
-            email=args['email'],
-            name=args['name'],
             surname=args['surname'],
+            name=args['name'],
             age=args['age'],
+            about=args['about'],
             position=args['position'],
             speciality=args['speciality'],
-            about=args['about']
+            address=args['address'],
+            email=args['email']
         )
         session.add(user)
         session.commit()
