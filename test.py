@@ -34,8 +34,8 @@ print(get('http://localhost:5000/api/v2/users/999').json())
 # Указана строка
 print(get('http://localhost:5000/api/v2/users/q').json())
 
-# Удаление пятого пользователя
-print(delete('http://localhost:5000/api/v2/users/5').json())
+# Удаление первого пользователя
+print(delete('http://localhost:5000/api/v2/users/1').json())
 
 # Пользователя с таким id нет
 print(delete('http://localhost:5000/api/v2/users/999').json())
